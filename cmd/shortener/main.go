@@ -5,8 +5,6 @@ import (
 
 	"github.com/siavoid/shortener/config"
 
-	"github.com/joho/godotenv"
-
 	"github.com/siavoid/shortener/internal/app/shortener"
 
 	_ "github.com/siavoid/shortener/docs"
@@ -20,10 +18,10 @@ import (
 // @BasePath /
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		//log.Fatalf("Error loading .env file")
-	}
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	//log.Fatalf("Error loading .env file")
+	// }
 
 	cfg, err := config.NewConfig()
 	if err != nil {
