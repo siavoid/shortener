@@ -23,6 +23,7 @@ type (
 
 	// HTTP -.
 	HTTP struct {
+		Host string `env-required:"true" yaml:"host" env:"HTTP_HOST"`
 		Port string `env-required:"true" yaml:"port" env:"HTTP_PORT"`
 	}
 

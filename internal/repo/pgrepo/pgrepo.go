@@ -5,6 +5,7 @@ import (
 	"github.com/siavoid/shortener/pkg/postgres"
 )
 
+// Задел на будущее
 type Interface interface {
 }
 
