@@ -60,6 +60,6 @@ func (s *Server) getOriginalURLHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Location", originalURL)
 	w.WriteHeader(http.StatusTemporaryRedirect)
-	fmt.Fprint(w, originalURL)
 }
