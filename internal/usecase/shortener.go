@@ -39,6 +39,8 @@ func cleanURL(url string) string {
 }
 
 func (u *UseCase) GetShortenURL(ctx context.Context, url string) (string, error) {
+	u.mu.Lock()
+	defer u.mu.Unlock()
 	url = strings.TrimSpace(url)
 	shortURL, err := u.createOrGetShortenURL(ctx, url)
 	shortURL = fmt.Sprintf("%s/%s", u.url, shortURL)
@@ -67,6 +69,8 @@ func (u *UseCase) createOrGetShortenURL(ctx context.Context, url string) (string
 }
 
 func (u *UseCase) GetOriginalURL(ctx context.Context, shortURL string) (string, error) {
+	u.mu.Lock()
+	defer u.mu.Unlock()
 	shortURL = strings.TrimSpace(shortURL)
 	if url, ok := u.urlStore.GetLongUrl(shortURL); ok {
 		return url, nil
