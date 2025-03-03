@@ -4,7 +4,6 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"sync"
 
 	"github.com/siavoid/shortener/config"
 	"github.com/siavoid/shortener/internal/repo/pgrepo"
@@ -29,11 +28,6 @@ type UseCase struct {
 	l        logger.Interface
 	url      string
 	urlStore *urlstore.URLStore
-
-	// Поскольку получение по короткой ссылке оригинальной url намного быстрее,
-	// чем наоброт, может возникнуть ситуация, когда короткая ссылка ещё не сохранилась,
-	// но её уже запрашивают.
-	mu sync.Mutex
 }
 
 var _ Interface = (*UseCase)(nil)
