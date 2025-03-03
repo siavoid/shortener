@@ -47,6 +47,9 @@ func cleanURL(url string) string {
 
 func (u *UseCase) GetShortenURL(ctx context.Context, url string) (string, error) {
 	url = strings.TrimSpace(url)
+	if len(url) == 0 {
+		return "", errors.New("url is empty")
+	}
 	shortURL, err := u.createOrGetShortenURL(ctx, url)
 	shortURL = fmt.Sprintf("%s/%s", u.url, shortURL)
 	return shortURL, err

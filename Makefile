@@ -17,9 +17,13 @@ build:
 test:
 	go test -count=1 ./...
 
-.PHONY: autotests
-autotests:
+.PHONY: autotests1
+autotests1:
 	shortenertest -test.v -test.run=^TestIteration1$$ -binary-path=./cmd/shortener/shortener.exe
+
+.PHONY: autotests2
+autotests2:
+	shortenertest -test.v -test.run=^TestIteration2$$ -binary-path=./cmd/shortener/shortener.exe
 
 .PHONY: vet
 vet:
