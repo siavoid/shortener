@@ -31,8 +31,8 @@ func (u *URLStore) GetLongUrl(shortURL string) (string, bool) {
 func (u *URLStore) GetShortUrl(url string) (string, bool) {
 	u.mu.Lock()
 	defer u.mu.Unlock()
-	shortUrl, exists := u.storeLongShort[url]
-	return shortUrl, exists
+	shortURL, exists := u.storeLongShort[url]
+	return shortURL, exists
 }
 
 // Put добавляет новую пару ключ-значение в хранилище

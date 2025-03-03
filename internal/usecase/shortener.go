@@ -18,7 +18,7 @@ func (u *UseCase) shortenURL(url string) string {
 	// Получение случайного числа
 	randomNumber := rand.Intn(9999)
 
-	// Комбинирование первых 4 байт хеша с случайным числом для уникальности
+	// Комбинирование первых 8 байт хеша с случайным числом для уникальности
 	shortURL := base64.URLEncoding.EncodeToString(hash[:4]) + base64.URLEncoding.EncodeToString([]byte{byte(randomNumber)})
 
 	// Удаление символов, которые не подходят для URL
@@ -33,9 +33,16 @@ func cleanURL(url string) string {
 	for _, c := range url {
 		if (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') {
 			result += string(c)
+		} else {
+			result += string("a")
 		}
 	}
-	return result[:8] // Ограничение длины до 8 символов
+
+	// Ограничение длины до 8 символов
+	if len(result) > 8 {
+		return result[:8]
+	}
+	return result
 }
 
 func (u *UseCase) GetShortenURL(ctx context.Context, url string) (string, error) {
