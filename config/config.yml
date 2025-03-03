@@ -1,0 +1,14 @@
+app:
+  name: 'shortener'
+  version: '1.0.0'
+
+http:
+  host: 'localhost'
+  port: '8080'
+
+logger:
+  log_level: 'debug'
+
+postgres:
+  pool_max: 2
+  pg_url: "test"
