@@ -8,16 +8,12 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
-	"time"
 )
 
 // ShortenURL создает сокращённый URL на основе хеша и случайного числа
 func (u *UseCase) shortenURL(url string) string {
 	// Генерация хеша от URL
 	hash := sha256.Sum256([]byte(url))
-
-	// Инициализация генератора случайных чисел
-	rand.Seed(time.Now().UnixNano())
 
 	// Получение случайного числа
 	randomNumber := rand.Intn(9999)
