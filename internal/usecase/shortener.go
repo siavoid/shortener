@@ -56,7 +56,7 @@ func (u *UseCase) GetShortenURL(ctx context.Context, url string) (string, error)
 
 func (u *UseCase) createOrGetShortenURL(ctx context.Context, url string) (string, error) {
 	// есть ли уже сокращенная ссылка
-	shortURL, ok := u.urlStore.GetShortUrl(url)
+	shortURL, ok := u.urlStore.GetShortURL(url)
 	if ok {
 		return shortURL, nil
 	}
@@ -65,7 +65,7 @@ func (u *UseCase) createOrGetShortenURL(ctx context.Context, url string) (string
 	for i := 0; i < 100; i++ { // маловроятно, но вдруг ...
 		shortURL = u.shortenURL(url)
 		// проверим, что короткая ссылка не занята
-		if _, ok := u.urlStore.GetLongUrl(shortURL); !ok {
+		if _, ok := u.urlStore.GetLongURL(shortURL); !ok {
 			break
 		}
 	}
@@ -79,7 +79,7 @@ func (u *UseCase) GetOriginalURL(ctx context.Context, shortURL string) (string, 
 	u.mu.Lock()
 	defer u.mu.Unlock()
 	shortURL = strings.TrimSpace(shortURL)
-	if url, ok := u.urlStore.GetLongUrl(shortURL); ok {
+	if url, ok := u.urlStore.GetLongURL(shortURL); ok {
 		return url, nil
 	}
 

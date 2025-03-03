@@ -20,7 +20,7 @@ func NewURLStore() *URLStore {
 }
 
 // Get получает полное значение URL по сокращённому ключу
-func (u *URLStore) GetLongUrl(shortURL string) (string, bool) {
+func (u *URLStore) GetLongURL(shortURL string) (string, bool) {
 	u.mu.Lock()
 	defer u.mu.Unlock()
 	url, exists := u.storeShortLong[shortURL]
@@ -28,7 +28,7 @@ func (u *URLStore) GetLongUrl(shortURL string) (string, bool) {
 }
 
 // Get получает полное значение URL по сокращённому ключу
-func (u *URLStore) GetShortUrl(url string) (string, bool) {
+func (u *URLStore) GetShortURL(url string) (string, bool) {
 	u.mu.Lock()
 	defer u.mu.Unlock()
 	shortURL, exists := u.storeLongShort[url]
