@@ -13,6 +13,10 @@ run:
 build:
 	go build -o ./cmd/shortener/shortener.exe ./cmd/shortener/main.go
 
+.PHONY: test
+test:
+	go test -count=1 ./...
+
 .PHONY: autotests
 autotests:
 	shortenertest -test.v -test.run=^TestIteration1$$ -binary-path=./cmd/shortener/shortener.exe
