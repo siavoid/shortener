@@ -55,7 +55,7 @@ func Test_cleanURL(t *testing.T) {
 func TestUseCase_GetShortenURL(t *testing.T) {
 	urlStore := urlstore.NewURLStore()
 	u := &UseCase{
-		url:      "http://localhost",
+		baseURL:  "http://localhost",
 		urlStore: urlStore,
 	}
 
@@ -74,7 +74,7 @@ func TestUseCase_GetShortenURL(t *testing.T) {
 			shortURL, err := u.GetShortenURL(context.Background(), tt.originalURL)
 			require.NoError(t, err, "GetShortenURL should not return an error")
 
-			shortURL = strings.TrimPrefix(shortURL, u.url+"/")
+			shortURL = strings.TrimPrefix(shortURL, u.baseURL+"/")
 
 			retrievedURL, err := u.GetOriginalURL(context.Background(), shortURL)
 			require.NoError(t, err, "GetOriginalURL should not return an error")
@@ -108,6 +108,41 @@ func TestUseCase_GetOriginalURL(t *testing.T) {
 			}
 
 			retrievedURL, err := u.GetOriginalURL(context.Background(), tt.shortURL)
+			if tt.wantErr {
+				assert.Error(t, err, "expected an error for non-existent short URL")
+			} else {
+				require.NoError(t, err, "GetOriginalURL should not return an error")
+				assert.Equal(t, tt.originalURL, retrievedURL, "retrieved URL should match the original URL")
+			}
+		})
+	}
+}
+
+func TestUseCase_CreateShortURLAndGetOriginalURL(t *testing.T) {
+	urlStore := urlstore.NewURLStore()
+	u := &UseCase{
+		urlStore: urlStore,
+	}
+
+	tests := []struct {
+		name        string
+		originalURL string
+		wantErr     bool
+	}{
+		{"new short URL", "https://example.com/test1", false},
+		{"existing short URL", "https://example.com/test1", false},
+		{"existing short URL", "https://example.com/test1?id=30&text=qwerqwerqwrq", false},
+		{"empty short URL", "", true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			shortURL, err := u.GetShortenURL(context.Background(), tt.originalURL)
+			if tt.wantErr {
+				assert.Error(t, err)
+			}
+			shortURL = strings.TrimPrefix(shortURL, u.baseURL+"/")
+			retrievedURL, err := u.GetOriginalURL(context.Background(), shortURL)
 			if tt.wantErr {
 				assert.Error(t, err, "expected an error for non-existent short URL")
 			} else {

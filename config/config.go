@@ -9,10 +9,11 @@ import (
 type (
 	// Config -.
 	Config struct {
-		App  `yaml:"app"`
-		HTTP `yaml:"http"`
-		Log  `yaml:"logger"`
-		PG   `yaml:"postgres"`
+		App       `yaml:"app"`
+		HTTP      `yaml:"http"`
+		Shortener `yaml:"shortener"`
+		Log       `yaml:"logger"`
+		PG        `yaml:"postgres"`
 	}
 
 	// App -.
@@ -24,7 +25,10 @@ type (
 	// HTTP -.
 	HTTP struct {
 		Host string `env-required:"true" yaml:"host" env:"HTTP_HOST"`
-		Port string `env-required:"true" yaml:"port" env:"HTTP_PORT"`
+	}
+
+	Shortener struct {
+		BaseURL string `env-required:"true" yaml:"base_url" env:"SHORTENER_BASE_URL"`
 	}
 
 	// Log -.

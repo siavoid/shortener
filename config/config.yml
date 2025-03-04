@@ -3,8 +3,10 @@ app:
   version: '1.0.0'
 
 http:
-  host: 'localhost'
-  port: '8080'
+  host: 'localhost:8080'
+
+shortener:
+  base_url: 'http://localhost:8080'
 
 logger:
   log_level: 'debug'

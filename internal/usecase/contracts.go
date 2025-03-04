@@ -3,7 +3,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/siavoid/shortener/config"
 	"github.com/siavoid/shortener/internal/repo/pgrepo"
@@ -26,18 +25,17 @@ type (
 type UseCase struct {
 	db       pgrepo.Interface
 	l        logger.Interface
-	url      string
+	baseURL  string
 	urlStore *urlstore.URLStore
 }
 
 var _ Interface = (*UseCase)(nil)
 
 func New(cfg *config.Config, l logger.Interface, db pgrepo.Interface) *UseCase {
-	url := fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port)
 	return &UseCase{
 		db:       db,
 		l:        l,
-		url:      "http://" + url,
+		baseURL:  cfg.Shortener.BaseURL,
 		urlStore: urlstore.NewURLStore(),
 	}
 }

@@ -3,7 +3,6 @@ package v1
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -18,8 +17,7 @@ import (
 func Test_ShortenURLHandler(t *testing.T) {
 	cfg := config.Config{
 		HTTP: config.HTTP{
-			Host: "localhost",
-			Port: "8080",
+			Host: "localhost:8080",
 		},
 	}
 	useCase := usecase.New(&cfg, nil, nil)
@@ -53,11 +51,12 @@ func Test_ShortenURLHandler(t *testing.T) {
 func Test_GetOriginalURLHandler(t *testing.T) {
 	cfg := config.Config{
 		HTTP: config.HTTP{
-			Host: "localhost",
-			Port: "8080",
+			Host: "localhost:8080",
+		},
+		Shortener: config.Shortener{
+			BaseURL: "http://localhost:8000",
 		},
 	}
-	localURL := fmt.Sprintf("http://%s:%s/", cfg.HTTP.Host, cfg.HTTP.Port)
 	useCase := usecase.New(&cfg, nil, nil)
 	server := &Server{u: useCase}
 
@@ -84,10 +83,10 @@ func Test_GetOriginalURLHandler(t *testing.T) {
 
 	originalURL := "https://example.com"
 	shortURL, _ := useCase.GetShortenURL(context.Background(), originalURL)
-	shortURL = strings.TrimPrefix(shortURL, localURL)
+	shortURL = strings.TrimPrefix(shortURL, cfg.BaseURL)
 	tests = append(tests, testcase{
 		name:    "create and get original URL",
-		request: "/" + shortURL,
+		request: shortURL,
 		want: want{
 			statusCode: http.StatusTemporaryRedirect,
 			url:        originalURL,
@@ -102,12 +101,13 @@ func Test_GetOriginalURLHandler(t *testing.T) {
 
 			// Use mux router to simulate path variable
 			router := mux.NewRouter()
-			router.HandleFunc("/{id}", server.getOriginalURLHandler)
+			router.HandleFunc("/{id}", server.getOriginalURLHandler).Methods(http.MethodGet)
 			router.ServeHTTP(rec, req)
 
 			res := rec.Result()
 			defer res.Body.Close()
 
+			// не знаю почему, но возращает код 301, хотя явно пишу 307
 			assert.Equal(t, tt.want.statusCode, res.StatusCode)
 			if res.StatusCode == http.StatusTemporaryRedirect {
 				url := res.Header.Get("Location")

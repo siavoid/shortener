@@ -32,6 +32,24 @@ autotest2:
 autotest3:
 	$(SHORTENER_TEST) -test.v -test.run=^TestIteration3$$ -source-path=.
 
+.PHONY: autotest4
+autotest4:
+	$(eval SERVER_PORT=$(shell python -c "import socket; s=socket.socket(); s.bind(('', 0)); print(s.getsockname()[1]); s.close()"))
+	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration4$$ \
+	-binary-path=$(BIN_PATH) \
+	-server-port=$(SERVER_PORT) \
+	-source-path=.
+
+
+.PHONY: autotest
+autotest: \
+	build \
+	autotest1 \
+	autotest2 \
+	autotest3 \
+	autotest4
+
+
 .PHONY: vet
 vet:
 	go vet -vettool=$(shell where statictest.exe) .\...

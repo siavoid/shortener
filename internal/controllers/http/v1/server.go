@@ -2,7 +2,6 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -28,7 +27,7 @@ type Server struct {
 
 func New(cfg *config.Config, u UserCaseInterface, l LoggerInterface) *Server {
 	router := mux.NewRouter()
-	url := fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port)
+	url := cfg.HTTP.Host
 	s := Server{
 		u:      u,
 		router: router,

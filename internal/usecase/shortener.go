@@ -51,7 +51,7 @@ func (u *UseCase) GetShortenURL(ctx context.Context, url string) (string, error)
 		return "", errors.New("url is empty")
 	}
 	shortURL, err := u.createOrGetShortenURL(ctx, url)
-	shortURL = fmt.Sprintf("%s/%s", u.url, shortURL)
+	shortURL = fmt.Sprintf("%s/%s", u.baseURL, shortURL)
 	return shortURL, err
 }
 
@@ -78,6 +78,9 @@ func (u *UseCase) createOrGetShortenURL(ctx context.Context, url string) (string
 
 func (u *UseCase) GetOriginalURL(ctx context.Context, shortURL string) (string, error) {
 	shortURL = strings.TrimSpace(shortURL)
+	if len(shortURL) == 0 {
+		return "", errors.New("shortURL is empty")
+	}
 	if url, ok := u.urlStore.GetLongURL(shortURL); ok {
 		return url, nil
 	}
