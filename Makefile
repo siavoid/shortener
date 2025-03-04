@@ -28,6 +28,10 @@ autotest1:
 autotest2:
 	$(SHORTENER_TEST) -test.v -test.run=^TestIteration2$$ -source-path=.
 
+.PHONY: autotest3
+autotest3:
+	$(SHORTENER_TEST) -test.v -test.run=^TestIteration3$$ -source-path=.
+
 .PHONY: vet
 vet:
 	go vet -vettool=$(shell where statictest.exe) .\...
