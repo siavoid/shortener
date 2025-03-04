@@ -17,7 +17,7 @@ import (
 func Test_ShortenURLHandler(t *testing.T) {
 	cfg := config.Config{
 		HTTP: config.HTTP{
-			Host: "localhost:8080",
+			ServerAddress: "localhost:8080",
 		},
 	}
 	useCase := usecase.New(&cfg, nil, nil)
@@ -51,7 +51,7 @@ func Test_ShortenURLHandler(t *testing.T) {
 func Test_GetOriginalURLHandler(t *testing.T) {
 	cfg := config.Config{
 		HTTP: config.HTTP{
-			Host: "localhost:8080",
+			ServerAddress: "localhost:8080",
 		},
 		Shortener: config.Shortener{
 			BaseURL: "http://localhost:8000",

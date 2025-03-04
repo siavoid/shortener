@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/siavoid/shortener/config"
 
 	"github.com/siavoid/shortener/internal/app/shortener"
@@ -22,14 +23,9 @@ import (
 // @BasePath /
 
 func main() {
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	//log.Fatalf("Error loading .env file")
-	// }
-	cfg, err := config.NewConfig()
+	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("Error read config")
-		return
+		log.Println("Error loading .env file")
 	}
 
 	// Определение флагов
@@ -49,8 +45,6 @@ func main() {
 	if *address != "" {
 		if _, err := url.ParseRequestURI("http://" + *address); err != nil {
 			log.Fatalf("Invalid address: %v", err)
-		} else {
-			cfg.HTTP.Host = *address
 		}
 	}
 
@@ -59,9 +53,13 @@ func main() {
 		// Проверка корректности базового URL
 		if _, err := url.ParseRequestURI(*baseURL); err != nil {
 			log.Fatalf("Invalid base URL: %v", err)
-		} else {
-			cfg.Shortener.BaseURL = *baseURL
 		}
+	}
+
+	cfg, err := config.NewConfig(*address, *baseURL)
+	if err != nil {
+		log.Fatalf("Error read config")
+		return
 	}
 
 	shortener.Run(cfg)

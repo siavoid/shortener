@@ -24,11 +24,11 @@ type (
 
 	// HTTP -.
 	HTTP struct {
-		Host string `env-required:"true" yaml:"host" env:"HTTP_HOST"`
+		ServerAddress string `env-required:"true" yaml:"server_address" env:"SERVER_ADDRESS"`
 	}
 
 	Shortener struct {
-		BaseURL string `env-required:"true" yaml:"base_url" env:"SHORTENER_BASE_URL"`
+		BaseURL string `env-required:"true" yaml:"base_url" env:"BASE_URL"`
 	}
 
 	// Log -.
@@ -44,12 +44,20 @@ type (
 )
 
 // NewConfig returns app config.
-func NewConfig() (*Config, error) {
+func NewConfig(address, baseURL string) (*Config, error) {
 	cfg := &Config{}
 
 	err := cleanenv.ReadConfig("./config/config.yml", cfg)
 	if err != nil {
 		return nil, fmt.Errorf("config error: %w", err)
+	}
+
+	if address != "" {
+		cfg.HTTP.ServerAddress = address
+	}
+
+	if baseURL != "" {
+		cfg.Shortener.BaseURL = baseURL
 	}
 
 	err = cleanenv.ReadEnv(cfg)

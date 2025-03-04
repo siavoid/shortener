@@ -27,7 +27,7 @@ type Server struct {
 
 func New(cfg *config.Config, u UserCaseInterface, l LoggerInterface) *Server {
 	router := mux.NewRouter()
-	url := cfg.HTTP.Host
+	url := cfg.HTTP.ServerAddress
 	s := Server{
 		u:      u,
 		router: router,

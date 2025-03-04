@@ -40,6 +40,14 @@ autotest4:
 	-server-port=$(SERVER_PORT) \
 	-source-path=.
 
+.PHONY: autotest5
+autotest5:
+	$(eval SERVER_PORT=$(shell python -c "import socket; s=socket.socket(); s.bind(('', 0)); print(s.getsockname()[1]); s.close()"))
+	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration5$$ \
+	-binary-path=$(BIN_PATH) \
+	-server-port=$(SERVER_PORT) \
+	-source-path=.
+
 
 .PHONY: autotest
 autotest: \
@@ -47,7 +55,8 @@ autotest: \
 	autotest1 \
 	autotest2 \
 	autotest3 \
-	autotest4
+	autotest4 \
+	autotest5
 
 
 .PHONY: vet
