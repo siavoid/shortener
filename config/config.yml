@@ -1,0 +1,16 @@
+app:
+  name: 'shortener'
+  version: '1.0.0'
+
+http:
+  server_address: 'localhost:8080'
+
+shortener:
+  base_url: 'http://localhost:8080'
+
+logger:
+  log_level: 'debug'
+
+postgres:
+  pool_max: 2
+  pg_url: "test"

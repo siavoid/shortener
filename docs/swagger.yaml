@@ -1,0 +1,58 @@
+basePath: /
+host: localhost:8080
+info:
+  contact: {}
+  description: API for shortening URLs.
+  title: URL Shortener API
+  version: "2.0"
+paths:
+  /:
+    post:
+      consumes:
+      - text/plain
+      description: Receives a URL and returns a shortened version.
+      parameters:
+      - description: URL to be shortened
+        in: body
+        name: url
+        required: true
+        schema:
+          type: string
+      produces:
+      - text/plain
+      responses:
+        "201":
+          description: Shortened URL
+          schema:
+            type: string
+        "400":
+          description: Invalid request
+          schema:
+            type: string
+        "500":
+          description: Error shortening URL
+          schema:
+            type: string
+      summary: Shorten URL
+  /{id}:
+    get:
+      description: Redirects to the original URL based on the shortened URL ID.
+      parameters:
+      - description: Shortened URL ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "307":
+          description: Temporary Redirect
+          schema:
+            type: string
+        "400":
+          description: Invalid request
+          schema:
+            type: string
+      summary: Get Original URL
+swagger: "2.0"
