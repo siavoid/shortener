@@ -58,6 +58,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/shorten": {
+            "post": {
+                "description": "Receives a URL in JSON and returns a shortened version in JSON.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Shorten URL",
+                "parameters": [
+                    {
+                        "description": "URL to be shortened",
+                        "name": "url",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ShortenURLRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shortened URL",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ShortenURLResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error shortening URL",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/{id}": {
             "get": {
                 "description": "Redirects to the original URL based on the shortened URL ID.",
@@ -90,6 +133,24 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "definitions": {
+        "dto.ShortenURLRequest": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ShortenURLResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "string"
+                }
+            }
+        }
     }
 }`
 
@@ -103,8 +164,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "API for shortening URLs.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	// LeftDelim:        "{{",
-	// RightDelim:       "}}",
+	//LeftDelim:        "{{",
+	//RightDelim:       "}}",
 }
 
 func init() {

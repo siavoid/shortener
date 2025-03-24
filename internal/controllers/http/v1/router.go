@@ -18,5 +18,6 @@ func (s *Server) routeRegistration() {
 
 	shortenRouter.HandleFunc("/", s.shortenURLHandler).Methods(http.MethodPost, http.MethodOptions)
 	shortenRouter.HandleFunc("/{id}", s.getOriginalURLHandler).Methods(http.MethodGet)
-	shortenRouter.HandleFunc("/api/shorten", http.NotFound).Methods(http.MethodPost)
+
+	shortenRouter.HandleFunc("/api/shorten", s.shortenURLInJSONHandler).Methods(http.MethodPost, http.MethodOptions)
 }

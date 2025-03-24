@@ -32,7 +32,7 @@ func LoggingMiddleware(log logger.Interface) func(http.Handler) http.Handler {
 				Method:       r.Method,
 				Status:       rw.statusCode,
 				ResponseSize: rw.size,
-				Duration:     duration,
+				Duration:     duration, // TODO: сделать в ms (или в ns)
 			}
 			logDataByte, err := json.Marshal(logData)
 			if err != nil {

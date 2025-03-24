@@ -39,7 +39,8 @@ autotest: \
 	autotest3 \
 	autotest4 \
 	autotest5 \
-	autotest6
+	autotest6 \
+	autotest7
 
 .PHONY: autotest1
 autotest1:
@@ -72,5 +73,11 @@ autotest5:
 .PHONY: autotest6
 autotest6:
 	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration6$$ -source-path=.
+
+.PHONY: autotest7
+autotest7:
+	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration6$$ -source-path=. \
+	-binary-path=$(BIN_PATH)
+
 
 
