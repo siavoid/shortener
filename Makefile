@@ -12,6 +12,10 @@ lint:
 run:
 	go run ./cmd/shortener/main.go
 
+.PHONY: swaginit
+swaginit:
+	swag init -g ./internal/controllers/http/v1/server.go
+
 .PHONY: build
 build:
 	go build -o $(BIN_PATH) ./cmd/shortener/main.go
@@ -19,6 +23,24 @@ build:
 .PHONY: test
 test:
 	go test -count=1 ./...
+
+.PHONY: vet
+vet:
+	go vet -vettool=$(shell where statictest.exe) .\...
+
+.PHONY: check
+check: vet build autotest
+
+.PHONY: autotest
+autotest: \
+	build \
+	autotest1 \
+	autotest2 \
+	autotest3 \
+	autotest4 \
+	autotest5 \
+	autotest6 \
+	autotest7
 
 .PHONY: autotest1
 autotest1:
@@ -48,20 +70,14 @@ autotest5:
 	-server-port=$(SERVER_PORT) \
 	-source-path=.
 
+.PHONY: autotest6
+autotest6:
+	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration6$$ -source-path=.
 
-.PHONY: autotest
-autotest: \
-	build \
-	autotest1 \
-	autotest2 \
-	autotest3 \
-	autotest4 \
-	autotest5
+.PHONY: autotest7
+autotest7:
+	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration7$$ -source-path=. \
+	-binary-path=$(BIN_PATH)
 
 
-.PHONY: vet
-vet:
-	go vet -vettool=$(shell where statictest.exe) .\...
 
-.PHONY: check
-check: vet build autotest
