@@ -108,6 +108,6 @@ func (s *Server) shortenURLInJSONHandler(w http.ResponseWriter, r *http.Request)
 
 	// Формирование ответа
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(res)
 }

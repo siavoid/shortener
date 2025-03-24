@@ -14,9 +14,8 @@ func (s *Server) routeRegistration() {
 	shortenRouter := s.router.PathPrefix("").Subrouter()
 
 	// shortenRouter.Use(middleware.CORSMiddleware) // включение CORS заголовков
+	shortenRouter.Use(middleware.GzipMiddleware)
 	shortenRouter.Use(middleware.LoggingMiddleware(s.logger))
-	shortenRouter.Use(middleware.GzipRequestMiddleware)
-	shortenRouter.Use(middleware.GzipResponseMiddleware)
 
 	shortenRouter.HandleFunc("/", s.shortenURLHandler).Methods(http.MethodPost, http.MethodOptions)
 	shortenRouter.HandleFunc("/{id}", s.getOriginalURLHandler).Methods(http.MethodGet)
