@@ -103,8 +103,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "API for shortening URLs.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	//LeftDelim:        "{{",
-	//RightDelim:       "}}",
+	// LeftDelim:        "{{",
+	// RightDelim:       "}}",
 }
 
 func init() {
