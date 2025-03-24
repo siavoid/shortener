@@ -133,7 +133,7 @@ func Test_ShortenURLInJSONHandler(t *testing.T) {
 		input          interface{}
 		expectedStatus int
 	}{
-		{"valid URL", dto.ShortenURLRequest{URL: "https://example.com"}, http.StatusOK},
+		{"valid URL", dto.ShortenURLRequest{URL: "https://example.com"}, http.StatusCreated},
 		{"empty URL", dto.ShortenURLRequest{URL: ""}, http.StatusBadRequest},
 		{"empty body", "", http.StatusBadRequest},
 	}
@@ -157,7 +157,7 @@ func Test_ShortenURLInJSONHandler(t *testing.T) {
 			}
 
 			assert.Equal(t, tt.expectedStatus, res.StatusCode)
-			if res.StatusCode == http.StatusOK {
+			if res.StatusCode == http.StatusCreated {
 				err = json.Unmarshal(body, &dto.ShortenURLResponse{})
 				assert.NoError(t, err)
 			}

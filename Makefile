@@ -76,7 +76,7 @@ autotest6:
 
 .PHONY: autotest7
 autotest7:
-	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration6$$ -source-path=. \
+	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration7$$ -source-path=. \
 	-binary-path=$(BIN_PATH)
 
 
