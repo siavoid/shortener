@@ -1,6 +1,7 @@
 package urlstore
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -41,9 +42,12 @@ func Test_URLStore(t *testing.T) {
 		},
 	}
 
+	testStorePath := "test.json"
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			store := NewURLStore()
+			defer os.Remove(testStorePath)
+			store, err := NewURLStore(testStorePath) // TODO: затем удалить этот файл
+			require.NoError(t, err)
 
 			// Initialize store with URL pairs
 			for _, pair := range tt.storeInit {

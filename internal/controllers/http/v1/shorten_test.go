@@ -7,14 +7,17 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
 	"github.com/gorilla/mux"
 	"github.com/siavoid/shortener/config"
 	"github.com/siavoid/shortener/internal/controllers/http/v1/dto"
+	"github.com/siavoid/shortener/internal/repo/urlstore"
 	"github.com/siavoid/shortener/internal/usecase"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_ShortenURLHandler(t *testing.T) {
@@ -23,7 +26,11 @@ func Test_ShortenURLHandler(t *testing.T) {
 			ServerAddress: "localhost:8080",
 		},
 	}
-	useCase := usecase.New(&cfg, nil, nil)
+	storeFile := "test.json"
+	defer os.Remove(storeFile)
+	urlStore, err := urlstore.NewURLStore(storeFile)
+	require.NoError(t, err)
+	useCase := usecase.New(&cfg, nil, nil, urlStore)
 
 	server := &Server{u: useCase}
 
@@ -60,7 +67,11 @@ func Test_GetOriginalURLHandler(t *testing.T) {
 			BaseURL: "http://localhost:8000",
 		},
 	}
-	useCase := usecase.New(&cfg, nil, nil)
+	storeFile := "test.json"
+	defer os.Remove(storeFile)
+	urlStore, err := urlstore.NewURLStore(storeFile)
+	require.NoError(t, err)
+	useCase := usecase.New(&cfg, nil, nil, urlStore)
 	server := &Server{u: useCase}
 
 	type want struct {
@@ -124,7 +135,11 @@ func Test_ShortenURLInJSONHandler(t *testing.T) {
 			ServerAddress: "localhost:8080",
 		},
 	}
-	useCase := usecase.New(&cfg, nil, nil)
+	storeFile := "test.json"
+	defer os.Remove(storeFile)
+	urlStore, err := urlstore.NewURLStore(storeFile)
+	require.NoError(t, err)
+	useCase := usecase.New(&cfg, nil, nil, urlStore)
 
 	server := &Server{u: useCase}
 

@@ -6,7 +6,6 @@ import (
 
 	"github.com/siavoid/shortener/config"
 	"github.com/siavoid/shortener/internal/repo/pgrepo"
-	"github.com/siavoid/shortener/internal/repo/urlstore"
 	"github.com/siavoid/shortener/pkg/logger"
 )
 
@@ -20,22 +19,28 @@ type (
 		GetShortenURL(context.Context, string) (string, error)
 		GetOriginalURL(context.Context, string) (string, error)
 	}
+
+	URLStoreInterface interface {
+		GetLongURL(shortURL string) (string, bool)
+		GetShortURL(url string) (string, bool)
+		Put(url string, shortURL string) error
+	}
 )
 
 type UseCase struct {
 	db       pgrepo.Interface
 	l        logger.Interface
 	baseURL  string
-	urlStore *urlstore.URLStore
+	urlStore URLStoreInterface
 }
 
 var _ Interface = (*UseCase)(nil)
 
-func New(cfg *config.Config, l logger.Interface, db pgrepo.Interface) *UseCase {
+func New(cfg *config.Config, l logger.Interface, db pgrepo.Interface, repo URLStoreInterface) *UseCase {
 	return &UseCase{
 		db:       db,
 		l:        l,
 		baseURL:  cfg.Shortener.BaseURL,
-		urlStore: urlstore.NewURLStore(),
+		urlStore: repo,
 	}
 }

@@ -20,8 +20,21 @@ func main() {
 	}
 
 	// Определение флагов
-	address := flag.String("a", "", "Address to start the HTTP server (e.g., localhost:8888)")
-	baseURL := flag.String("b", "", "Base URL for the shortened URL (e.g., http://localhost:8000)")
+	address := flag.String(
+		"a",
+		"",
+		"Address to start the HTTP server (e.g., localhost:8888)",
+	)
+	baseURL := flag.String(
+		"b",
+		"",
+		"Base URL for the shortened URL (e.g., http://localhost:8000)",
+	)
+	fileStorePath := flag.String(
+		"f",
+		"",
+		"The full path to the json file for storing links (e.g., /tmp/short-url-db.json)",
+	)
 
 	// Вывод справочной информации
 	flag.Usage = func() {
@@ -47,7 +60,7 @@ func main() {
 		}
 	}
 
-	cfg, err := config.NewConfig(*address, *baseURL)
+	cfg, err := config.NewConfig(*address, *baseURL, *fileStorePath)
 	if err != nil {
 		log.Fatalf("Error read config")
 		return
