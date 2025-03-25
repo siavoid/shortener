@@ -16,4 +16,4 @@ postgres:
   pg_url: "test"
 
 repo:
-  file_store: "./tmp/short-url-db.json"
+  file_store: "/tmp/short-url-db.json"
