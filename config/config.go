@@ -14,6 +14,7 @@ type (
 		Shortener `yaml:"shortener"`
 		Log       `yaml:"logger"`
 		PG        `yaml:"postgres"`
+		Repo      `yaml:"repo"`
 	}
 
 	// App -.
@@ -36,6 +37,11 @@ type (
 		Level string `env-required:"true" yaml:"log_level"   env:"LOG_LEVEL"`
 	}
 
+	// Repo - сохранение в файл
+	Repo struct {
+		FileStore string `env-required:"true" yaml:"file_store"   env:"FILE_STORAGE_PATH"`
+	}
+
 	// PG -.
 	PG struct {
 		PoolMax int    `env-required:"true" yaml:"pool_max" env:"PG_POOL_MAX"`
@@ -44,7 +50,7 @@ type (
 )
 
 // NewConfig returns app config.
-func NewConfig(address, baseURL string) (*Config, error) {
+func NewConfig(address, baseURL, fileStorePath string) (*Config, error) {
 	cfg := &Config{}
 
 	err := cleanenv.ReadConfig("./config/config.yml", cfg)
@@ -58,6 +64,10 @@ func NewConfig(address, baseURL string) (*Config, error) {
 
 	if baseURL != "" {
 		cfg.Shortener.BaseURL = baseURL
+	}
+
+	if fileStorePath != "" {
+		cfg.Repo.FileStore = fileStorePath
 	}
 
 	err = cleanenv.ReadEnv(cfg)

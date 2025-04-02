@@ -8,6 +8,7 @@ import (
 
 	"github.com/siavoid/shortener/config"
 	v1 "github.com/siavoid/shortener/internal/controllers/http/v1"
+	"github.com/siavoid/shortener/internal/repo/urlstore"
 	"github.com/siavoid/shortener/internal/usecase"
 	"github.com/siavoid/shortener/pkg/logger"
 )
@@ -17,7 +18,11 @@ func Run(cfg *config.Config) {
 	l := logger.New(cfg.Log.Level)
 
 	var tempDB interface{}
-	u := usecase.New(cfg, l, tempDB)
+	urlStore, err := urlstore.NewURLStore(cfg.Repo.FileStore)
+	if err != nil {
+		l.Fatal("urlStore err : %w", err)
+	}
+	u := usecase.New(cfg, l, tempDB, urlStore)
 	server := v1.New(cfg, u, l)
 
 	go func() {

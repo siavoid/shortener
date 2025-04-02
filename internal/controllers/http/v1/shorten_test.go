@@ -3,15 +3,21 @@ package v1
 import (
 	"bytes"
 	"context"
+	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
 	"github.com/gorilla/mux"
 	"github.com/siavoid/shortener/config"
+	"github.com/siavoid/shortener/internal/controllers/http/v1/dto"
+	"github.com/siavoid/shortener/internal/repo/urlstore"
 	"github.com/siavoid/shortener/internal/usecase"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_ShortenURLHandler(t *testing.T) {
@@ -20,7 +26,11 @@ func Test_ShortenURLHandler(t *testing.T) {
 			ServerAddress: "localhost:8080",
 		},
 	}
-	useCase := usecase.New(&cfg, nil, nil)
+	storeFile := "test.json"
+	defer os.Remove(storeFile)
+	urlStore, err := urlstore.NewURLStore(storeFile)
+	require.NoError(t, err)
+	useCase := usecase.New(&cfg, nil, nil, urlStore)
 
 	server := &Server{u: useCase}
 
@@ -57,7 +67,11 @@ func Test_GetOriginalURLHandler(t *testing.T) {
 			BaseURL: "http://localhost:8000",
 		},
 	}
-	useCase := usecase.New(&cfg, nil, nil)
+	storeFile := "test.json"
+	defer os.Remove(storeFile)
+	urlStore, err := urlstore.NewURLStore(storeFile)
+	require.NoError(t, err)
+	useCase := usecase.New(&cfg, nil, nil, urlStore)
 	server := &Server{u: useCase}
 
 	type want struct {
@@ -99,7 +113,6 @@ func Test_GetOriginalURLHandler(t *testing.T) {
 			req := httptest.NewRequest(http.MethodGet, tt.request, nil)
 			rec := httptest.NewRecorder()
 
-			// Use mux router to simulate path variable
 			router := mux.NewRouter()
 			router.HandleFunc("/{id}", server.getOriginalURLHandler).Methods(http.MethodGet)
 			router.ServeHTTP(rec, req)
@@ -107,11 +120,61 @@ func Test_GetOriginalURLHandler(t *testing.T) {
 			res := rec.Result()
 			defer res.Body.Close()
 
-			// не знаю почему, но возращает код 301, хотя явно пишу 307
 			assert.Equal(t, tt.want.statusCode, res.StatusCode)
 			if res.StatusCode == http.StatusTemporaryRedirect {
 				url := res.Header.Get("Location")
 				assert.Equal(t, tt.want.url, url)
+			}
+		})
+	}
+}
+
+func Test_ShortenURLInJSONHandler(t *testing.T) {
+	cfg := config.Config{
+		HTTP: config.HTTP{
+			ServerAddress: "localhost:8080",
+		},
+	}
+	storeFile := "test.json"
+	defer os.Remove(storeFile)
+	urlStore, err := urlstore.NewURLStore(storeFile)
+	require.NoError(t, err)
+	useCase := usecase.New(&cfg, nil, nil, urlStore)
+
+	server := &Server{u: useCase}
+
+	tests := []struct {
+		name           string
+		input          interface{}
+		expectedStatus int
+	}{
+		{"valid URL", dto.ShortenURLRequest{URL: "https://example.com"}, http.StatusCreated},
+		{"empty URL", dto.ShortenURLRequest{URL: ""}, http.StatusBadRequest},
+		{"empty body", "", http.StatusBadRequest},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			data, err := json.Marshal(tt.input)
+			if err != nil {
+				assert.Error(t, err)
+			}
+			req := httptest.NewRequest(http.MethodPost, "/api/shorten", bytes.NewReader(data))
+			rec := httptest.NewRecorder()
+
+			server.shortenURLInJSONHandler(rec, req)
+
+			res := rec.Result()
+			defer res.Body.Close()
+			body, err := io.ReadAll(res.Body)
+			if err != nil {
+				assert.Error(t, err)
+			}
+
+			assert.Equal(t, tt.expectedStatus, res.StatusCode)
+			if res.StatusCode == http.StatusCreated {
+				err = json.Unmarshal(body, &dto.ShortenURLResponse{})
+				assert.NoError(t, err)
 			}
 		})
 	}

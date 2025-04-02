@@ -14,3 +14,6 @@ logger:
 postgres:
   pool_max: 2
   pg_url: "test"
+
+repo:
+  file_store: "/tmp/short-url-db.json"

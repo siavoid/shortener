@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"os"
 	"strings"
 	"testing"
 
@@ -53,7 +54,10 @@ func Test_cleanURL(t *testing.T) {
 }
 
 func TestUseCase_GetShortenURL(t *testing.T) {
-	urlStore := urlstore.NewURLStore()
+	storeFile := "test.json"
+	defer os.Remove(storeFile)
+	urlStore, err := urlstore.NewURLStore(storeFile)
+	require.NoError(t, err)
 	u := &UseCase{
 		baseURL:  "http://localhost",
 		urlStore: urlStore,
@@ -84,7 +88,10 @@ func TestUseCase_GetShortenURL(t *testing.T) {
 }
 
 func TestUseCase_GetOriginalURL(t *testing.T) {
-	urlStore := urlstore.NewURLStore()
+	storeFile := "test.json"
+	defer os.Remove(storeFile)
+	urlStore, err := urlstore.NewURLStore(storeFile)
+	require.NoError(t, err)
 	u := &UseCase{
 		urlStore: urlStore,
 	}
@@ -119,7 +126,10 @@ func TestUseCase_GetOriginalURL(t *testing.T) {
 }
 
 func TestUseCase_CreateShortURLAndGetOriginalURL(t *testing.T) {
-	urlStore := urlstore.NewURLStore()
+	storeFile := "test.json"
+	defer os.Remove(storeFile)
+	urlStore, err := urlstore.NewURLStore(storeFile)
+	require.NoError(t, err)
 	u := &UseCase{
 		urlStore: urlStore,
 	}

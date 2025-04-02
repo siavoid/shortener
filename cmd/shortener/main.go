@@ -11,16 +11,7 @@ import (
 	"github.com/siavoid/shortener/config"
 
 	"github.com/siavoid/shortener/internal/app/shortener"
-
-	_ "github.com/siavoid/shortener/docs"
 )
-
-// @title URL Shortener API
-// @version         2.0
-// @description API for shortening URLs.
-
-// @host localhost:8080
-// @BasePath /
 
 func main() {
 	err := godotenv.Load()
@@ -29,8 +20,21 @@ func main() {
 	}
 
 	// Определение флагов
-	address := flag.String("a", "", "Address to start the HTTP server (e.g., localhost:8888)")
-	baseURL := flag.String("b", "", "Base URL for the shortened URL (e.g., http://localhost:8000)")
+	address := flag.String(
+		"a",
+		"",
+		"Address to start the HTTP server (e.g., localhost:8888)",
+	)
+	baseURL := flag.String(
+		"b",
+		"",
+		"Base URL for the shortened URL (e.g., http://localhost:8000)",
+	)
+	fileStorePath := flag.String(
+		"f",
+		"",
+		"The full path to the json file for storing links (e.g., /tmp/short-url-db.json)",
+	)
 
 	// Вывод справочной информации
 	flag.Usage = func() {
@@ -56,7 +60,7 @@ func main() {
 		}
 	}
 
-	cfg, err := config.NewConfig(*address, *baseURL)
+	cfg, err := config.NewConfig(*address, *baseURL, *fileStorePath)
 	if err != nil {
 		log.Fatalf("Error read config")
 		return

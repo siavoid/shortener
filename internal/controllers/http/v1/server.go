@@ -10,7 +10,16 @@ import (
 	"github.com/siavoid/shortener/pkg/logger"
 
 	"github.com/gorilla/mux"
+
+	_ "github.com/siavoid/shortener/docs"
 )
+
+// @title URL Shortener API
+// @version         2.0
+// @description API for shortening URLs.
+
+// @host localhost:8080
+// @BasePath /
 
 type UserCaseInterface usecase.Interface
 
