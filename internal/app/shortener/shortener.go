@@ -3,8 +3,11 @@ package shortener
 import (
 	"context"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/siavoid/shortener/config"
 	v1 "github.com/siavoid/shortener/internal/controllers/http/v1"
@@ -43,22 +46,24 @@ func Run(cfg *config.Config) {
 	server := v1.New(cfg, u, l)
 
 	go func() {
-		if err := server.Run(); err != nil {
+		if err := server.Run(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Failed to run server: %v", err)
 		}
 	}()
 
 	// Создаем канал для получения сигналов
 	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan, os.Interrupt) // Подписываемся на сигнал прерывания (Ctrl+C)
+	signal.Notify(signalChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM) // Подписываемся на сигнал прерывания (Ctrl+C)
 
 	// Ожидаем сигнала
 	<-signalChan
 	log.Println("Received shutdown signal, stopping server...")
 
 	// Останавливаем сервер
-	if err := server.Stop(context.Background()); err != nil {
-		log.Fatalf("Server forced to shutdown: %v", err)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := server.Stop(ctx); err != nil {
+		l.Error("Server forced to shutdown: %v", err)
 	}
 
 	log.Println("Server stopped gracefully")

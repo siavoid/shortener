@@ -3,7 +3,6 @@ package v1
 import (
 	"context"
 	"net/http"
-	"time"
 
 	"github.com/siavoid/shortener/config"
 	"github.com/siavoid/shortener/internal/usecase"
@@ -59,10 +58,6 @@ func (s *Server) Run() error {
 
 // Stop - .
 func (s *Server) Stop(ctx context.Context) error {
-	// Устанавливаем таймаут для завершения работы сервера
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-	defer cancel()
-
 	// Останавливаем сервер
 	if err := s.httpServer.Shutdown(ctx); err != nil {
 		return err

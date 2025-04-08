@@ -6,11 +6,11 @@ SHORTENER_TEST=shortenertest
 SHORTENER_TEST_BETA=shortenertestbeta
 TEMP_STORE_FILE=./tmp/short-url-db.json
 
-POSTGRES_USER=admin
-POSTGRES_PASSWORD=admin
-POSTGRES_DB=shortener
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=praktikum
 PG_IMAGE_NAME=shorten_postgres
-DATABASE_DSN='postgresql://admin:admin@localhost:5432/shortener?sslmode=disable'
+DATABASE_DSN='postgres://postgres:postgres@localhost:5432/praktikum?sslmode=disable'
 
 .PHONY: lint
 lint:
@@ -136,6 +136,7 @@ autotest10:
 
 .PHONY: autotest11
 autotest11:
+	@type nul > $(TEMP_STORE_FILE)
 	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration11$$ \
 	-binary-path=$(BIN_PATH) \
 	-database-dsn=$(DATABASE_DSN)
