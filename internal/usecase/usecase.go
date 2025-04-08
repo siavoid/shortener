@@ -1,4 +1,3 @@
-// Package usecase implements application business logic. Each logic group in own file.
 package usecase
 
 import (
@@ -25,12 +24,6 @@ type (
 		GetShortURL(url string) (string, bool)
 		Put(url string, shortURL string) error
 		Ping(ctx context.Context) error
-	}
-
-	URLStoreInterface interface {
-		GetLongURL(shortURL string) (string, bool)
-		GetShortURL(url string) (string, bool)
-		Put(url string, shortURL string) error
 	}
 )
 
