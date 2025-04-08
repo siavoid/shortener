@@ -60,7 +60,8 @@ autotest: \
 	autotest6 \
 	autotest7 \
 	autotest8 \
-	autotest9
+	autotest9 \
+	autotest10
 
 
 .PHONY: autotest1

@@ -74,7 +74,7 @@ func main() {
 	)
 
 	if err != nil {
-		log.Fatalf("Error read config")
+		log.Fatalf("Error read config: %s", err)
 		return
 	}
 

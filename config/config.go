@@ -44,8 +44,8 @@ type (
 
 	// PG -.
 	PG struct {
-		PoolMax int    `env-required:"false" yaml:"pool_max" env:"PG_POOL_MAX"`
-		URL     string `env-required:"false" env:"DATABASE_DSN"`
+		PoolMax int    `yaml:"pool_max" env:"PG_POOL_MAX"`
+		URL     string `env:"DATABASE_DSN"`
 	}
 )
 

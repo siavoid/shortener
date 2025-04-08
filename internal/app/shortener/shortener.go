@@ -14,7 +14,6 @@ import (
 	"github.com/siavoid/shortener/internal/repo/urlstore"
 	"github.com/siavoid/shortener/internal/usecase"
 	"github.com/siavoid/shortener/pkg/logger"
-	"github.com/siavoid/shortener/pkg/postgres"
 )
 
 func Run(cfg *config.Config) {
@@ -24,12 +23,13 @@ func Run(cfg *config.Config) {
 
 	var repo usecase.URLStoreInterface
 	if cfg.PG.URL != "" {
-		db, err := postgres.New(cfg.PG.URL)
+		l.Debug("pg: %s", cfg.PG.URL)
+		db, err := pgrepo.NewPostgresRepo(cfg.PG.URL, l)
 		if err != nil {
 			l.Fatal("postgres connect : %s", err.Error())
 			return
 		}
-		repo = pgrepo.New(db, l)
+		repo = db
 	} else {
 		repostre, err := urlstore.NewURLStore(cfg.Repo.FileStore)
 		if err != nil {

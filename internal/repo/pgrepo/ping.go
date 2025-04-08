@@ -3,5 +3,9 @@ package pgrepo
 import "context"
 
 func (p *PostgresRepo) Ping(ctx context.Context) error {
-	return p.db.Pool.Ping(ctx)
+	sqlDB, err := p.DB.DB()
+	if err != nil {
+		return err
+	}
+	return sqlDB.PingContext(ctx)
 }
