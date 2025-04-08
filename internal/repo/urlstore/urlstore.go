@@ -2,6 +2,8 @@ package urlstore
 
 import (
 	"bufio"
+	"context"
+
 	"encoding/json"
 	"fmt"
 	"os"
@@ -29,6 +31,10 @@ func NewURLStore(fileStorePath string) (*URLStore, error) {
 	}
 	err := store.init()
 	return store, err
+}
+
+func (u *URLStore) Ping(ctx context.Context) error {
+	return nil
 }
 
 // init инициализирует структуру из файла

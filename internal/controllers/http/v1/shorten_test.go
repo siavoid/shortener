@@ -30,7 +30,7 @@ func Test_ShortenURLHandler(t *testing.T) {
 	defer os.Remove(storeFile)
 	urlStore, err := urlstore.NewURLStore(storeFile)
 	require.NoError(t, err)
-	useCase := usecase.New(&cfg, nil, nil, urlStore)
+	useCase := usecase.New(&cfg, nil, urlStore)
 
 	server := &Server{u: useCase}
 
@@ -71,7 +71,7 @@ func Test_GetOriginalURLHandler(t *testing.T) {
 	defer os.Remove(storeFile)
 	urlStore, err := urlstore.NewURLStore(storeFile)
 	require.NoError(t, err)
-	useCase := usecase.New(&cfg, nil, nil, urlStore)
+	useCase := usecase.New(&cfg, nil, urlStore)
 	server := &Server{u: useCase}
 
 	type want struct {
@@ -139,7 +139,7 @@ func Test_ShortenURLInJSONHandler(t *testing.T) {
 	defer os.Remove(storeFile)
 	urlStore, err := urlstore.NewURLStore(storeFile)
 	require.NoError(t, err)
-	useCase := usecase.New(&cfg, nil, nil, urlStore)
+	useCase := usecase.New(&cfg, nil, urlStore)
 
 	server := &Server{u: useCase}
 

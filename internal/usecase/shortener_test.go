@@ -6,10 +6,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/siavoid/shortener/internal/repo/urlstore"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/siavoid/shortener/internal/repo/urlstore"
 )
 
 func Test_shortenURL(t *testing.T) {
