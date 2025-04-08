@@ -1,7 +1,8 @@
 module github.com/siavoid/shortener
 
-go 1.22
+go 1.23
 
+toolchain go1.24.2
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
