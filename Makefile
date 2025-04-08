@@ -10,6 +10,7 @@ POSTGRES_USER=admin
 POSTGRES_PASSWORD=admin
 POSTGRES_DB=shortener
 PG_IMAGE_NAME=shorten_postgres
+DATABASE_DSN='postgresql://admin:admin@localhost:5432/shortener?sslmode=disable'
 
 .PHONY: lint
 lint:
@@ -131,7 +132,10 @@ autotest10:
 	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration10$$ \
 	-binary-path=$(BIN_PATH) \
 	-source-path=. \
-	-database-dsn='postgresql://admin:admin@localhost:5432/shortener?sslmode=disable'
+	-database-dsn=$(DATABASE_DSN)
 
-
-
+.PHONY: autotest11
+autotest11:
+	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration11$$ \
+	-binary-path=$(BIN_PATH) \
+	-database-dsn=$(DATABASE_DSN)

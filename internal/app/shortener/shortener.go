@@ -17,7 +17,6 @@ import (
 )
 
 func Run(cfg *config.Config) {
-
 	l := logger.New(cfg.Log.Level)
 	l.Debug("config: %+v\n\n", cfg)
 
