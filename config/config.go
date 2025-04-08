@@ -44,13 +44,13 @@ type (
 
 	// PG -.
 	PG struct {
-		PoolMax int    `env-required:"true" yaml:"pool_max" env:"PG_POOL_MAX"`
-		URL     string `env-required:"true" yaml:"pg_url"  env:"PG_URL"`
+		PoolMax int    `env-required:"false" yaml:"pool_max" env:"PG_POOL_MAX"`
+		URL     string `env-required:"false" env:"DATABASE_DSN"`
 	}
 )
 
 // NewConfig returns app config.
-func NewConfig(address, baseURL, fileStorePath string) (*Config, error) {
+func NewConfig(address, baseURL, fileStorePath, postgresURL string) (*Config, error) {
 	cfg := &Config{}
 
 	err := cleanenv.ReadConfig("./config/config.yml", cfg)
@@ -68,6 +68,10 @@ func NewConfig(address, baseURL, fileStorePath string) (*Config, error) {
 
 	if fileStorePath != "" {
 		cfg.Repo.FileStore = fileStorePath
+	}
+
+	if postgresURL != "" {
+		cfg.PG.URL = postgresURL
 	}
 
 	err = cleanenv.ReadEnv(cfg)
