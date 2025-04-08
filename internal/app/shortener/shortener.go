@@ -8,7 +8,9 @@ import (
 
 	"github.com/siavoid/shortener/config"
 	v1 "github.com/siavoid/shortener/internal/controllers/http/v1"
+
 	"github.com/siavoid/shortener/internal/repo/pgrepo"
+
 	"github.com/siavoid/shortener/internal/repo/urlstore"
 	"github.com/siavoid/shortener/internal/usecase"
 	"github.com/siavoid/shortener/pkg/logger"
@@ -38,6 +40,7 @@ func Run(cfg *config.Config) {
 	}
 
 	u := usecase.New(cfg, l, repo)
+
 	server := v1.New(cfg, u, l)
 
 	go func() {

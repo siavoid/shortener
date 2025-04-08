@@ -35,11 +35,13 @@ func main() {
 		"",
 		"The full path to the json file for storing links (e.g., /tmp/short-url-db.json)",
 	)
+
 	postgresURL := flag.String(
 		"d",
 		"",
 		"The string with the postgres database connection address",
 	)
+
 	// Вывод справочной информации
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
@@ -70,6 +72,7 @@ func main() {
 		*fileStorePath,
 		*postgresURL,
 	)
+
 	if err != nil {
 		log.Fatalf("Error read config")
 		return

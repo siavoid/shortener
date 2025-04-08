@@ -26,6 +26,12 @@ type (
 		Put(url string, shortURL string) error
 		Ping(ctx context.Context) error
 	}
+
+	URLStoreInterface interface {
+		GetLongURL(shortURL string) (string, bool)
+		GetShortURL(url string) (string, bool)
+		Put(url string, shortURL string) error
+	}
 )
 
 type UseCase struct {

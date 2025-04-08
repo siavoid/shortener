@@ -123,6 +123,7 @@ autotest9:
 	-source-path=. \
 	-file-storage-path=$(TEMP_STORE_FILE)
 
+
 .PHONY: autotest10
 autotest10:
 	@type nul > $(TEMP_STORE_FILE)
@@ -130,5 +131,6 @@ autotest10:
 	-binary-path=$(BIN_PATH) \
 	-source-path=. \
 	-database-dsn='postgresql://admin:admin@localhost:5432/shortener?sslmode=disable'
+
 
 
