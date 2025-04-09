@@ -148,3 +148,10 @@ autotest12:
 	-binary-path=$(BIN_PATH) \
 	-database-dsn=$(DATABASE_DSN)
 
+.PHONY: autotest13
+autotest13:
+	@type nul > $(TEMP_STORE_FILE)
+	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration13$$ \
+	-binary-path=$(BIN_PATH) \
+	-database-dsn=$(DATABASE_DSN)
+

@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
+
+	"github.com/siavoid/shortener/internal/internalerror"
 )
 
 // ShortenURL создает сокращённый URL на основе хеша и случайного числа
@@ -59,11 +61,11 @@ func (u *UseCase) createOrGetShortenURL(ctx context.Context, url string) (string
 	// есть ли уже сокращенная ссылка
 	shortURL, ok := u.urlStore.GetShortURL(url)
 	if ok {
-		return shortURL, nil
+		return shortURL, internalerror.ErrConflict
 	}
 
 	// создание короткой ссылки
-	for i := 0; i < 100; i++ { // маловроятно, но вдруг ...
+	for range 100 { // маловроятно, но вдруг ...
 		shortURL = u.shortenURL(url)
 		// проверим, что короткая ссылка не занята
 		if _, ok := u.urlStore.GetLongURL(shortURL); !ok {
