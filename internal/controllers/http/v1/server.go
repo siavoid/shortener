@@ -3,10 +3,9 @@ package v1
 import (
 	"context"
 	"net/http"
-	"time"
 
 	"github.com/siavoid/shortener/config"
-	"github.com/siavoid/shortener/internal/usecase"
+	"github.com/siavoid/shortener/internal/entity"
 	"github.com/siavoid/shortener/pkg/logger"
 
 	"github.com/gorilla/mux"
@@ -21,7 +20,13 @@ import (
 // @host localhost:8080
 // @BasePath /
 
-type UserCaseInterface usecase.Interface
+// Shortener - .
+type UserCaseShortener interface {
+	GetShortenURL(context.Context, string) (string, error)
+	GetOriginalURL(context.Context, string) (string, error)
+	RepoPing(context.Context) error
+	ShortenBatch(ctx context.Context, origBatch []entity.BatchOriginalURL) ([]entity.BatchShortURL, error)
+}
 
 type LoggerInterface logger.Interface
 
@@ -30,11 +35,11 @@ type Server struct {
 	url        string
 	router     *mux.Router
 	httpServer *http.Server
-	u          UserCaseInterface
+	u          UserCaseShortener
 	logger     LoggerInterface
 }
 
-func New(cfg *config.Config, u UserCaseInterface, l LoggerInterface) *Server {
+func New(cfg *config.Config, u UserCaseShortener, l LoggerInterface) *Server {
 	router := mux.NewRouter()
 	url := cfg.HTTP.ServerAddress
 	s := Server{
@@ -59,10 +64,6 @@ func (s *Server) Run() error {
 
 // Stop - .
 func (s *Server) Stop(ctx context.Context) error {
-	// Устанавливаем таймаут для завершения работы сервера
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-	defer cancel()
-
 	// Останавливаем сервер
 	if err := s.httpServer.Shutdown(ctx); err != nil {
 		return err

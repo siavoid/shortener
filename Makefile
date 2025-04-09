@@ -1,9 +1,16 @@
--include .env
+include .env
+
 DEFAULT_GOAL := local
 BIN_PATH=./cmd/shortener/shortener.exe
 SHORTENER_TEST=shortenertest
 SHORTENER_TEST_BETA=shortenertestbeta
 TEMP_STORE_FILE=./tmp/short-url-db.json
+
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=praktikum
+PG_IMAGE_NAME=shorten_postgres
+DATABASE_DSN='postgres://postgres:postgres@localhost:5432/praktikum?sslmode=disable'
 
 .PHONY: lint
 lint:
@@ -20,6 +27,17 @@ swaginit:
 .PHONY: build
 build:
 	go build -o $(BIN_PATH) ./cmd/shortener/main.go
+
+.PHONY: pgbuild
+pgbuild:
+	docker build --build-arg POSTGRES_USER=$(POSTGRES_USER) \
+	--build-arg POSTGRES_PASSWORD=$(POSTGRES_PASSWORD) \
+	--build-arg POSTGRES_DB=$(POSTGRES_DB) \
+	-t $(PG_IMAGE_NAME) ./deploy/pg/
+
+.PHONY: pgrun
+pgrun:
+	docker run --rm -p 5432:5432 $(PG_IMAGE_NAME)
 
 .PHONY: test
 test:
@@ -43,7 +61,8 @@ autotest: \
 	autotest6 \
 	autotest7 \
 	autotest8 \
-	autotest9
+	autotest9 \
+	autotest10
 
 
 .PHONY: autotest1
@@ -106,4 +125,33 @@ autotest9:
 	-source-path=. \
 	-file-storage-path=$(TEMP_STORE_FILE)
 
+
+.PHONY: autotest10
+autotest10:
+	@type nul > $(TEMP_STORE_FILE)
+	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration10$$ \
+	-binary-path=$(BIN_PATH) \
+	-source-path=. \
+	-database-dsn=$(DATABASE_DSN)
+
+.PHONY: autotest11
+autotest11:
+	@type nul > $(TEMP_STORE_FILE)
+	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration11$$ \
+	-binary-path=$(BIN_PATH) \
+	-database-dsn=$(DATABASE_DSN)
+
+.PHONY: autotest12
+autotest12:
+	@type nul > $(TEMP_STORE_FILE)
+	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration12$$ \
+	-binary-path=$(BIN_PATH) \
+	-database-dsn=$(DATABASE_DSN)
+
+.PHONY: autotest13
+autotest13:
+	@type nul > $(TEMP_STORE_FILE)
+	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration13$$ \
+	-binary-path=$(BIN_PATH) \
+	-database-dsn=$(DATABASE_DSN)
 

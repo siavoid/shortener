@@ -2,12 +2,14 @@ package v1
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/siavoid/shortener/internal/controllers/http/v1/dto"
+	"github.com/siavoid/shortener/internal/internalerror"
 )
 
 // @Summary Shorten URL
@@ -31,14 +33,18 @@ func (s *Server) shortenURLHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Сокращение URL
 	shortenedURL, err := s.u.GetShortenURL(r.Context(), originalURL)
-	if err != nil {
+	if err != nil && !errors.Is(err, internalerror.ErrConflict) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// Формирование ответа
 	w.Header().Set("Content-Type", "text/plain")
-	w.WriteHeader(http.StatusCreated)
+	if errors.Is(err, internalerror.ErrConflict) {
+		w.WriteHeader(http.StatusConflict)
+	} else {
+		w.WriteHeader(http.StatusCreated)
+	}
 	fmt.Fprint(w, shortenedURL)
 }
 
@@ -98,7 +104,7 @@ func (s *Server) shortenURLInJSONHandler(w http.ResponseWriter, r *http.Request)
 
 	// Сокращение URL
 	shortenedURL, err := s.u.GetShortenURL(r.Context(), req.URL)
-	if err != nil {
+	if err != nil && !errors.Is(err, internalerror.ErrConflict) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -108,6 +114,10 @@ func (s *Server) shortenURLInJSONHandler(w http.ResponseWriter, r *http.Request)
 
 	// Формирование ответа
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
+	if errors.Is(err, internalerror.ErrConflict) {
+		w.WriteHeader(http.StatusConflict)
+	} else {
+		w.WriteHeader(http.StatusCreated)
+	}
 	json.NewEncoder(w).Encode(res)
 }
