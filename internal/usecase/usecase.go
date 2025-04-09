@@ -8,17 +8,6 @@ import (
 )
 
 type (
-	Interface interface {
-		shortener
-	}
-
-	// Shortener - .
-	shortener interface {
-		GetShortenURL(context.Context, string) (string, error)
-		GetOriginalURL(context.Context, string) (string, error)
-		RepoPing(context.Context) error
-	}
-
 	URLStoreInterface interface {
 		GetLongURL(shortURL string) (string, bool)
 		GetShortURL(url string) (string, bool)
@@ -32,8 +21,6 @@ type UseCase struct {
 	baseURL  string
 	urlStore URLStoreInterface
 }
-
-var _ Interface = (*UseCase)(nil)
 
 func New(cfg *config.Config, l logger.Interface, repo URLStoreInterface) *UseCase {
 	return &UseCase{

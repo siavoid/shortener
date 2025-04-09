@@ -14,7 +14,6 @@ import (
 )
 
 func main() {
-	fmt.Println(1)
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("Error loading .env file")
@@ -43,7 +42,6 @@ func main() {
 		"The string with the postgres database connection address",
 	)
 
-	fmt.Println(2)
 	// Вывод справочной информации
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
@@ -68,7 +66,6 @@ func main() {
 		}
 	}
 
-	fmt.Println(3)
 	cfg, err := config.NewConfig(
 		*address,
 		*baseURL,
@@ -77,7 +74,6 @@ func main() {
 	)
 
 	if err != nil {
-		fmt.Println(4)
 		log.Fatalf("Error read config: %s", err)
 		return
 	}

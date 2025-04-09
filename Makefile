@@ -140,3 +140,11 @@ autotest11:
 	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration11$$ \
 	-binary-path=$(BIN_PATH) \
 	-database-dsn=$(DATABASE_DSN)
+
+.PHONY: autotest12
+autotest12:
+	@type nul > $(TEMP_STORE_FILE)
+	$(SHORTENER_TEST_BETA) -test.v -test.run=^TestIteration12$$ \
+	-binary-path=$(BIN_PATH) \
+	-database-dsn=$(DATABASE_DSN)
+

@@ -31,3 +31,21 @@ func (p *PostgresRepo) Put(originalURL string, shortURL string) error {
 	}
 	return nil
 }
+
+func (p *PostgresRepo) DeleteByShortURL(shortURL string) error {
+	result := p.DB.Delete(&entity.URL{}, "short_url = ?", shortURL)
+	if result.Error != nil {
+		p.logger.Error("DeleteByShortURL error: %v", result.Error)
+		return result.Error
+	}
+	return nil
+}
+
+func (p *PostgresRepo) DeleteByOriginalURL(originalURL string) error {
+	result := p.DB.Delete(&entity.URL{}, "original_url = ?", originalURL)
+	if result.Error != nil {
+		p.logger.Error("DeleteByOriginalURL error: %v", result.Error)
+		return result.Error
+	}
+	return nil
+}

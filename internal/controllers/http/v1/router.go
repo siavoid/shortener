@@ -24,4 +24,5 @@ func (s *Server) routeRegistration() {
 
 	shortenRouter.HandleFunc("/api/shorten", s.shortenURLInJSONHandler).Methods(http.MethodPost, http.MethodOptions)
 
+	shortenRouter.HandleFunc("/api/shorten/batch", s.shortenBatchHandler).Methods(http.MethodPost, http.MethodOptions)
 }
