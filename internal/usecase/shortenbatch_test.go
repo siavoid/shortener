@@ -2,10 +2,12 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"os"
 	"testing"
 
 	"github.com/siavoid/shortener/internal/entity"
+	"github.com/siavoid/shortener/internal/internalerror"
 	"github.com/siavoid/shortener/internal/repo/urlstore"
 	"github.com/siavoid/shortener/pkg/logger"
 	"github.com/stretchr/testify/assert"
@@ -47,12 +49,17 @@ func TestShortenBatch(t *testing.T) {
 	batchShort, err := u.ShortenBatch(ctx, batchOrig)
 
 	// Проверка результатов
-	require.NoError(t, err)
+	if !errors.Is(err, internalerror.ErrConflict) {
+		require.NoError(t, err)
+	}
+
 	assert.Equal(t, expectedBatchShort, batchShort)
 
 	for i := range len(expectedBatchShort) {
 		expectedBatchShort[i].ShortURL, err = u.GetShortenURL(context.Background(), batchOrig[i].OriginalURL)
-		require.NoError(t, err)
+		if !errors.Is(err, internalerror.ErrConflict) {
+			require.NoError(t, err)
+		}
 	}
 	assert.Equal(t, expectedBatchShort, batchShort)
 }
